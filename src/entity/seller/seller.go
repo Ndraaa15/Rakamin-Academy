@@ -2,12 +2,10 @@ package seller
 
 import (
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type Seller struct {
-	ID         uuid.UUID `json:"id" gorm:"type:char(36);primaryKey;"`
+	ID         uint      `json:"id" gorm:"type:int(10) UNSIGNED AUTO_INCREMENT;primaryKey;"`
 	Name       string    `json:"name" gorm:"type:varchar(255);NOT NULL;"`
 	Password   string    `json:"password" gorm:"type:varchar(255);NOT NULL;"`
 	Contact    string    `json:"contact" gorm:"type:varchar(255);NOT NULL;UNIQUE;"`
