@@ -6,7 +6,11 @@ import (
 	supabasestorageuploader "github.com/adityarizkyramadhan/supabase-storage-uploader"
 )
 
-func SupabaseConnect() supabasestorageuploader.SupabaseClientService {
+type Supabase struct {
+	supabasestorageuploader.SupabaseClientService
+}
+
+func SupabaseConnect() *Supabase {
 	supClient := supabasestorageuploader.NewSupabaseClient(
 		os.Getenv("PROJECT_URL"),
 		os.Getenv("PROJECT_API_KEYS"),
@@ -14,5 +18,5 @@ func SupabaseConnect() supabasestorageuploader.SupabaseClientService {
 		os.Getenv("STORAGE_FOLDER"),
 	)
 
-	return supClient
+	return &Supabase{supClient}
 }
