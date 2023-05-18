@@ -7,7 +7,7 @@ type Transaction struct {
 	SellerID uint `json:"seller_id" gorm:"type:int(10);NOT NULL;"`
 	// Seller    entity.Seller `json:"seller" gorm:"foreignKey:SellerID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	AddressID   uint      `json:"address_id" gorm:"NOT NULL;"`
-	Address     Address   `json:"address" gorm:"foreignKey:AddressID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Address     Address   `json:"address" gorm:"foreignKey:AddressID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	TotalPrice  uint      `json:"total_price" gorm:"NOTE NULL;"`
 	InvoiceCode string    `json:"invoice_code" gorm:"type:varchar(255);NOT NULL;"`
 	PaymentType string    `json:"payment_type" gorm:"type:varchar(255);NOT NULL;"`
