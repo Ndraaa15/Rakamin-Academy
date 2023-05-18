@@ -10,18 +10,18 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-type DB struct {
+type SQL struct {
 	*gorm.DB
 }
 
-func MySQLConnect() (*DB, error) {
+func MySQLConnect() (*SQL, error) {
 	db, err := MySQLInit()
 
 	if err != nil {
 		log.Fatal("Error connecting to database: ", err.Error())
 	}
 
-	return &DB{db}, nil
+	return &SQL{db}, nil
 }
 
 func MySQLInit() (*gorm.DB, error) {

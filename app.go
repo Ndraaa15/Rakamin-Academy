@@ -1,17 +1,29 @@
 package main
 
 import (
-	"net/http"
-
-	"github.com/gin-gonic/gin"
+	"log"
+	"rakamin-academy/database"
+	c "rakamin-academy/src/controller"
+	sr "rakamin-academy/src/repository/seller_repo"
+	ss "rakamin-academy/src/service/seller_service"
 )
 
 func main() {
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
-	r.Run()
+
+	sql, err := database.MySQLConnect()
+
+	if err != nil {
+		log.Fatal("Failed to initialize MySQL connection")
+	}
+
+	supabase := database.SupabaseConnect()
+
+	database.RunMigration(sql)
+
+	sr := sr.NewSellerRepository(sql, supabase)
+	ss := ss.NewSellerService(sr)
+
+	c := c.NewController(ss)
+
+	c.RunServer()
 }
