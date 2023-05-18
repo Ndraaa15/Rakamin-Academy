@@ -7,10 +7,10 @@ import (
 type Seller struct {
 	ID         uint      `json:"id" gorm:"type:int(10) UNSIGNED AUTO_INCREMENT;primaryKey;"`
 	Name       string    `json:"name" gorm:"type:varchar(255);NOT NULL;"`
-	Password   string    `json:"password" gorm:"type:varchar(255);NOT NULL;"`
+	Password   string    `json:"-" gorm:"type:varchar(255);NOT NULL;"`
 	Contact    string    `json:"contact" gorm:"type:varchar(255);NOT NULL;UNIQUE;"`
 	Email      string    `json:"email" gorm:"type:varchar(255);NOT NULL;UNIQUE;"`
-	BirthDate  time.Time `json:"birth_date" gorm:"type:date;NOT NULL;"`
+	BirthDate  string    `json:"birth_date" gorm:"type:date;NOT NULL;"`
 	Gender     string    `json:"gender" gorm:"type:varchar(255);NOT NULL;"`
 	About      string    `json:"about" gorm:"type:text;NOT NULL;"`
 	Job        string    `json:"job" gorm:"type:varchar(255);NOT NULL;"`
