@@ -2,14 +2,14 @@ package merchant
 
 import (
 	p "rakamin-academy/src/entity/product"
-	s "rakamin-academy/src/entity/seller"
+	u "rakamin-academy/src/entity/user"
 	"time"
 )
 
 type Merchant struct {
 	ID       uint        `json:"id" gorm:"type:int(10) UNSIGNED AUTO_INCREMENT;primaryKey;"`
 	SellerID uint        `json:"seller_id" gorm:"type:int(10);NOT NULL;"`
-	Seller   s.Seller    `json:"seller" gorm:"foreignKey:SellerID;"`
+	Seller   u.User      `json:"seller" gorm:"foreignKey:SellerID;"`
 	Name     string      `json:"name" gorm:"type:varchar(255);NOT NULL;"`
 	URL      string      `json:"url" gorm:"type:varchar(255);NOT NULL;"`
 	CreateAt time.Time   `json:"create_at" gorm:"type:date;NOT NULL;DEFAULT:CURRENT_TIMESTAMP;"`

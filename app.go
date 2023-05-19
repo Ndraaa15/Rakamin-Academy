@@ -4,8 +4,8 @@ import (
 	"log"
 	"rakamin-academy/database"
 	c "rakamin-academy/src/controller"
-	sr "rakamin-academy/src/repository/seller_repo"
-	ss "rakamin-academy/src/service/seller_service"
+	ur "rakamin-academy/src/repository/user_repo"
+	us "rakamin-academy/src/service/user_service"
 )
 
 func main() {
@@ -20,10 +20,10 @@ func main() {
 
 	database.RunMigration(sql)
 
-	sr := sr.NewSellerRepository(sql, supabase)
-	ss := ss.NewSellerService(sr)
+	ur := ur.NewUserRepository(sql, supabase)
+	us := us.NewUserService(ur)
 
-	c := c.NewController(ss)
+	c := c.NewController(us)
 
 	c.RunServer()
 }
