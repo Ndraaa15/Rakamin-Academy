@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type Seller struct {
+type User struct {
 	ID         uint      `json:"id" gorm:"type:int(10) UNSIGNED AUTO_INCREMENT;primaryKey;"`
 	Name       string    `json:"name" gorm:"type:varchar(255);NOT NULL;"`
 	Password   string    `json:"-" gorm:"type:varchar(255);NOT NULL;"`

@@ -13,3 +13,13 @@ type RegisterRequest struct {
 	CityID     uint   `json:"city_id" binding:"required"`
 	IsAdmin    bool   `json:"is_admin" binding:"required"`
 }
+
+type LoginRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}
+
+type LoginResponse struct {
+	User  interface{} `json:"user"`
+	Token string      `json:"token"`
+}

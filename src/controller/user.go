@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (c *Controller) SellerRegister(ctx *gin.Context) {
+func (c *Controller) UserRegister(ctx *gin.Context) {
 
 	var registerInput model.RegisterRequest
 
@@ -16,11 +16,21 @@ func (c *Controller) SellerRegister(ctx *gin.Context) {
 		message.Error(ctx, http.StatusUnprocessableEntity, "Invalid JSON format", err.Error())
 	}
 
-	seller, err := c.ss.Register(ctx.Request.Context(), registerInput)
+	user, err := c.us.Register(ctx.Request.Context(), registerInput)
 
 	if err != nil {
 		message.Error(ctx, http.StatusInternalServerError, "Failed to Register", err.Error())
 	}
 
-	message.Success(ctx, http.StatusOK, "Success to Register", seller)
+	message.Success(ctx, http.StatusOK, "Success to Register", user)
+}
+
+func (c *Controller) UserLogin(ctx *gin.Context) {
+
+	var loginInput model.LoginRequest
+
+	if err := ctx.ShouldBindJSON(&loginInput); err != nil {
+		message.Error(ctx, http.StatusUnprocessableEntity, "Invalid JSON format", err.Error())
+	}
+
 }
