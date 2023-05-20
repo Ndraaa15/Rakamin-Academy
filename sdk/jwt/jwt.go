@@ -20,7 +20,7 @@ func GenerateToken(user u.User) (string, error) {
 	signedToken, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 
 	if err != nil {
-		return "", errors.New("FAILED")
+		return "", errors.New("FAILED TO GENERATE TOKEN")
 	}
 
 	return signedToken, nil
