@@ -20,7 +20,7 @@ func GenerateToken(user u.User) (string, error) {
 	signedToken, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 
 	if err != nil {
-		return "", errors.New("failed to generate token")
+		return "", errors.New("FAILED")
 	}
 
 	return signedToken, nil
@@ -34,18 +34,19 @@ func DecodeToken(token string) (map[string]interface{}, error) {
 	})
 
 	if err != nil {
-		return nil, errors.New("failed to parse token")
+		return nil, errors.New("FAILED TO PARSE TOKEN")
 	}
 
 	claims, ok := decodeToken.Claims.(jwt.MapClaims)
 
 	if !ok {
-		return nil, errors.New("failed to claims token")
+		return nil, errors.New("FAILED TO CLAIMS TOKEN")
 	}
 
 	if !decodeToken.Valid {
-		return nil, errors.New("invalid token")
+		return nil, errors.New("INVALID TOKEN")
 	}
 
 	return claims, nil
+
 }
