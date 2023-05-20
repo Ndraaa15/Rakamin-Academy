@@ -3,56 +3,83 @@ package seller_service
 import (
 	"context"
 	"errors"
+	"rakamin-academy/sdk/password"
 	"rakamin-academy/sdk/validator"
+	m "rakamin-academy/src/entity/merchant"
 	u "rakamin-academy/src/entity/user"
 	"rakamin-academy/src/model"
-	r "rakamin-academy/src/repository/user_repo"
+	mr "rakamin-academy/src/repository/merchant_repo"
+	ur "rakamin-academy/src/repository/user_repo"
 )
 
 type User struct {
-	ur r.UserRepository
+	ur ur.UserRepository
+	mr mr.MerchantRepository
 }
 
-func NewUserService(userRepo r.UserRepository) UserService {
-	return &User{userRepo}
+func NewUserService(ur ur.UserRepository, mr mr.MerchantRepository) UserService {
+	return &User{
+		ur: ur,
+		mr: mr,
+	}
 }
 
 func (us *User) Register(ctx context.Context, registerInput model.RegisterRequest) (u.User, error) {
-	var seller u.User
+
+	var user u.User
+
+	var merchant m.Merchant
 
 	if !validator.EmailValidator(registerInput.Email) {
-		return seller, errors.New("invalid format email")
+		return user, errors.New("INVALID FORMAT EMAIL")
 	}
 
 	if !validator.PasswordValidator(registerInput.Password) {
-		return seller, errors.New("invalid format password")
+		return user, errors.New("INVALID FORMAT PASSWORD")
 	}
 
 	if !validator.PhoneValidator(registerInput.Contact) {
-		return seller, errors.New("invalid format phone number")
+		return user, errors.New("INVALID FORMAT PHONE NUMBER")
 	}
 
-	seller = u.User{
+	password, err := password.HashPassword(registerInput.Password)
+
+	if err != nil {
+		return user, errors.New("FAILED TO HASH PASSWORD")
+	}
+
+	user = u.User{
 		Name:       registerInput.Name,
 		Email:      registerInput.Email,
 		Contact:    registerInput.Contact,
-		Password:   registerInput.Password,
+		Password:   password,
 		BirthDate:  registerInput.BirthDate,
 		Gender:     registerInput.Gender,
 		About:      registerInput.About,
 		Job:        registerInput.Job,
 		ProvinceID: registerInput.ProvinceID,
 		CityID:     registerInput.CityID,
-		IsAdmin:    registerInput.IsAdmin,
 	}
 
-	seller, err := us.ur.Create(ctx, seller)
+	user, err = us.ur.Create(ctx, user)
 
 	if err != nil {
-		return seller, errors.New("failed to register")
+		return user, errors.New("FAILED TO CREATE USER")
 	}
 
-	return seller, nil
+	merchant = m.Merchant{
+		UserID: user.ID,
+		User:   user,
+	}
+
+	_, err = us.mr.Create(ctx, merchant)
+
+	if err != nil {
+		return user, errors.New("FAILED TO CREATE MERCHANT")
+	}
+
+	return user, nil
+
 }
 
 func (us *User) Login(ctx context.Context, loginInput model.LoginRequest) (model.LoginResponse, error) {
