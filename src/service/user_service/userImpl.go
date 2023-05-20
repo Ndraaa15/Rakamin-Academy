@@ -3,6 +3,7 @@ package seller_service
 import (
 	"context"
 	"errors"
+	"rakamin-academy/sdk/jwt"
 	"rakamin-academy/sdk/password"
 	"rakamin-academy/sdk/validator"
 	m "rakamin-academy/src/entity/merchant"
@@ -31,21 +32,21 @@ func (us *User) Register(ctx context.Context, registerInput model.RegisterReques
 	var merchant m.Merchant
 
 	if !validator.EmailValidator(registerInput.Email) {
-		return user, errors.New("INVALID FORMAT EMAIL")
+		return user, errors.New("SERVICE ERROR : INVALID FORMAT EMAIL")
 	}
 
 	if !validator.PasswordValidator(registerInput.Password) {
-		return user, errors.New("INVALID FORMAT PASSWORD")
+		return user, errors.New("SERVICE ERROR : INVALID FORMAT PASSWORD")
 	}
 
 	if !validator.PhoneValidator(registerInput.Contact) {
-		return user, errors.New("INVALID FORMAT PHONE NUMBER")
+		return user, errors.New("SERVICE ERROR : INVALID FORMAT PHONE NUMBER")
 	}
 
 	password, err := password.HashPassword(registerInput.Password)
 
 	if err != nil {
-		return user, errors.New("FAILED TO HASH PASSWORD")
+		return user, errors.New("SERVICE ERROR : FAILED TO HASH PASSWORD")
 	}
 
 	user = u.User{
@@ -64,7 +65,7 @@ func (us *User) Register(ctx context.Context, registerInput model.RegisterReques
 	user, err = us.ur.Create(ctx, user)
 
 	if err != nil {
-		return user, errors.New("FAILED TO CREATE USER")
+		return user, errors.New("SERVICE ERROR : FAILED TO CREATE USER")
 	}
 
 	merchant = m.Merchant{
@@ -75,7 +76,7 @@ func (us *User) Register(ctx context.Context, registerInput model.RegisterReques
 	_, err = us.mr.Create(ctx, merchant)
 
 	if err != nil {
-		return user, errors.New("FAILED TO CREATE MERCHANT")
+		return user, errors.New("SERVICE ERROR : FAILED TO CREATE MERCHANT")
 	}
 
 	return user, nil
@@ -83,26 +84,34 @@ func (us *User) Register(ctx context.Context, registerInput model.RegisterReques
 }
 
 func (us *User) Login(ctx context.Context, loginInput model.LoginRequest) (model.LoginResponse, error) {
+
 	var loginResponse model.LoginResponse
 
 	if !validator.EmailValidator(loginInput.Email) {
-		return loginResponse, errors.New("invalid format email")
+		return loginResponse, errors.New("SERVICE ERROR : INVALID FORMAT EMAIL")
 	}
 
 	if !validator.PasswordValidator(loginInput.Password) {
-		return loginResponse, errors.New("invalid format password")
+		return loginResponse, errors.New("SERVICE ERROR : INVALID FORMAT PASSWORD")
 	}
 
 	user, err := us.ur.FindByEmail(ctx, loginInput.Email)
 
 	if err != nil {
-		return loginResponse, errors.New("user not found")
+		return loginResponse, errors.New("SERVICE ERROR : USER NOT FOUND")
+	}
+
+	token, err := jwt.GenerateToken(user)
+
+	if err != nil {
+		return loginResponse, errors.New("SERVICE ERROR : FAILED TO GET TOKEN")
 	}
 
 	loginResponse = model.LoginResponse{
 		User:  user,
-		Token: "token",
+		Token: token,
 	}
 
 	return loginResponse, nil
+
 }
