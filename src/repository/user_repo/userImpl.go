@@ -16,24 +16,36 @@ func NewUserRepository(sql *database.SQL, supabase *database.Supabase) UserRepos
 	return &User{sql, supabase}
 }
 
-func (ur *User) Create(ctx context.Context, seller u.User) (u.User, error) {
+func (ur *User) Create(ctx context.Context, user u.User) (u.User, error) {
 
-	if err := ur.sql.Debug().WithContext(ctx).Create(&seller).Error; err != nil {
-		return seller, errors.New("GORM ERROR : " + err.Error())
+	if err := ur.sql.Debug().WithContext(ctx).Create(&user).Error; err != nil {
+		return user, errors.New("GORM ERROR : " + err.Error())
 	}
 
-	return seller, nil
+	return user, nil
 
 }
 
 func (ur *User) FindByEmail(ctx context.Context, email string) (u.User, error) {
 
-	var seller u.User
+	var user u.User
 
-	if err := ur.sql.Debug().WithContext(ctx).Where("email = ?", email).First(&seller).Error; err != nil {
-		return seller, errors.New("GORM ERROR : " + err.Error())
+	if err := ur.sql.Debug().WithContext(ctx).Where("email = ?", email).First(&user).Error; err != nil {
+		return user, errors.New("GORM ERROR : " + err.Error())
 	}
 
-	return seller, nil
+	return user, nil
+
+}
+
+func (ur *User) FindByID(ctx context.Context, userID uint) (u.User, error) {
+
+	var user u.User
+
+	if err := ur.sql.Debug().WithContext(ctx).Where("id = ?", userID).First(&user).Error; err != nil {
+		return user, errors.New("GORM ERROR : " + err.Error())
+	}
+
+	return user, nil
 
 }

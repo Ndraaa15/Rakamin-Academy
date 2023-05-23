@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"os"
+	cs "rakamin-academy/src/service/category_service"
 	us "rakamin-academy/src/service/user_service"
 	"sync"
 
@@ -14,13 +15,15 @@ var once = sync.Once{}
 type Controller struct {
 	http *gin.Engine
 	us   us.UserService
+	cs   cs.CategoryService
 }
 
-func NewController(ss us.UserService) *Controller {
+func NewController(us us.UserService, cs cs.CategoryService) *Controller {
 	r := Controller{}
 	once.Do(func() {
 		r.http = gin.Default()
-		r.us = ss
+		r.us = us
+		r.cs = cs
 		r.RoutesAndMiddleware()
 	})
 	return &r
